@@ -55,7 +55,7 @@ skills/<category>/<skill-name>/SKILL.md
 
 ### Engineering
 
-- **[code-review](./skills/engineering/code-review/SKILL.md)** — deep, context-aware reviews for GitHub PRs and local branch changes, with severity-ranked findings and handoff prompts.
+- **[code-review](./skills/engineering/code-review/SKILL.md)** — deep, context-aware reviews for GitHub PRs and local branch changes, with severity-ranked findings and handoff prompts. Built for when you need code reviews but don't want to pay for CodeRabbit Pro ($30/mo/user) — not as good, but pretty decent.
 - **[git-commit](./skills/engineering/git-commit/SKILL.md)** — stage all changes and create a git commit with an auto-generated, convention-matched message.
 - **[git-pr](./skills/engineering/git-pr/SKILL.md)** — branch off master/develop when needed, commit all changes, push, and open a PR automatically.
 
