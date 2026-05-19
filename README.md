@@ -81,3 +81,7 @@ List skills locally:
 2. Add `SKILL.md` with the skill instructions.
 3. Add any supporting examples, scripts, or reference docs inside the same skill directory.
 4. Update the reference list in this README.
+
+## Demo
+
+![Code review output demo](./assets/code_review_comment_sample.jpeg)
