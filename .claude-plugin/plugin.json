@@ -1,0 +1,11 @@
+{
+  "name": "operatorr-skills",
+  "description": "A personal collection of small, composable agent skills for real engineering work.",
+  "version": "0.1.0",
+  "author": { "name": "Alexander Widing" },
+  "skills": [
+    "./skills/engineering/code-review",
+    "./skills/engineering/git-commit",
+    "./skills/engineering/git-pr"
+  ]
+}

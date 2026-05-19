@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+find skills -name SKILL.md -not -path '*/deprecated/*' | sort | while read -r skill; do
+  name="$(basename "$(dirname "$skill")")"
+  category="$(basename "$(dirname "$(dirname "$skill")")")"
+  printf '%s/%s\n' "$category" "$name"
+done
