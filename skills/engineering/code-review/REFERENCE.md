@@ -102,18 +102,103 @@ This PR adds attendee activity tracking to the event endpoint. The core directio
 - Checks run: `npm test -- AttendeeService`
 ````
 
+## GitHub PR Comment Template
+
+Use this one-comment format when posting a review to a GitHub PR. Keep the summary and statistics visible, and wrap every finding in its own collapsible section.
+
+````markdown
+# Code Review
+
+[Short overall assessment. State whether the PR looks mergeable, has blocking issues, or needs specific follow-up.]
+
+### Statistics
+- Files changed: X
+- Issues found: Y (Critical: A, High: B, Medium: C, Low: D)
+- Checks run: [commands or "not run"]
+
+### Findings
+
+<details>
+<summary>[Severity] path/to/file.ext:line - short issue title</summary>
+
+**Category:** Bug | Security | Logic | Reliability | Maintainability | Testing | Performance | Style
+
+**Problem:**
+[Clear 1-2 sentence explanation of what is wrong and why it matters.]
+
+**Impact:**
+[Specific consequence if this is not fixed.]
+
+**Suggested Fix:**
+```diff
+[Exact unified diff, or a precise before/after code block if a diff is not practical.]
+```
+
+**Handoff Prompt:**
+```text
+In the file `path/to/file.ext`, around lines X-Y:
+
+[Detailed, self-contained instruction explaining the exact change needed, why it is required, edge cases to consider, and how to verify it.]
+
+Only modify the necessary lines. Keep unrelated code unchanged.
+```
+
+</details>
+````
+
+If there are no findings, omit the `### Findings` section and say clearly that no blocking issues were found.
+
 ## GitHub CLI Commands
 
-Create a review with a markdown body:
+Check whether posting is available:
 
 ```bash
-gh pr review 123 --comment --body-file /tmp/review.md
+command -v gh
+gh auth status
+```
+
+Resolve PR metadata and diff:
+
+```bash
+gh pr view <url-or-number> --json title,body,author,baseRefName,headRefName,files,commits,url
+gh pr diff <url-or-number>
 ```
 
 Post as a single PR comment:
 
 ```bash
-gh pr comment 123 --body-file /tmp/review.md
+tmp_review="$(mktemp -t code-review.XXXXXX.md)"
+# Write the final GitHub comment markdown to "$tmp_review" before posting.
+gh pr comment <url-or-number> --body-file "$tmp_review"
+```
+
+Terminal fallback when `gh` is missing or unauthenticated:
+
+```bash
+tmp_review="$(mktemp -t code-review.XXXXXX.md)"
+# Write the final GitHub comment markdown to "$tmp_review" before fallback handling.
+if ! command -v gh >/dev/null 2>&1; then
+  printf 'GitHub posting skipped: gh is not installed.\n\n'
+  cat "$tmp_review"
+elif ! gh auth status 2>/tmp/code-review-gh-auth.err; then
+  printf 'GitHub posting skipped: gh auth status failed.\n'
+  cat /tmp/code-review-gh-auth.err
+  printf '\n\n'
+  cat "$tmp_review"
+fi
+```
+
+Terminal fallback when posting fails:
+
+```bash
+tmp_review="$(mktemp -t code-review.XXXXXX.md)"
+# Write the final GitHub comment markdown to "$tmp_review" before posting.
+gh pr comment <url-or-number> --body-file "$tmp_review" 2>/tmp/code-review-gh-post.err || {
+  printf 'GitHub posting failed.\n'
+  cat /tmp/code-review-gh-post.err
+  printf '\n\n'
+  cat "$tmp_review"
+}
 ```
 
 Create line-specific comments with the API:

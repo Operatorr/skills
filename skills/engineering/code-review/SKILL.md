@@ -11,6 +11,7 @@ Review code like a senior engineer: understand the intent, inspect the diff in c
 
 ```bash
 Review PR #123 with full context
+/skill:code-review https://github.com/OWNER/REPO/pull/123
 Review the current branch against main as if it were a PR
 Do a security-focused review of this PR
 Review these local changes but do not post to GitHub
@@ -22,7 +23,9 @@ Review these local changes but do not post to GitHub
 - Do not nitpick personal style. Only flag style issues when they violate explicit project rules.
 - Be specific and actionable. Every finding should include the exact file/location, impact, and a concrete fix.
 - Review only by default. Do not edit code unless the user explicitly asks you to fix the issues.
-- Never post to GitHub or another external system without asking the user first.
+- Treat a direct GitHub PR URL as permission to post the completed review back to that PR, unless the user says not to post.
+- Keep local branch reviews, file-only reviews, and non-URL PR references terminal-only unless the user explicitly asks to post.
+- User wording such as "do not post", "review only", "don't comment", or "terminal only" overrides any posting permission.
 
 ## Workflow
 
@@ -30,18 +33,28 @@ Follow this process for every review.
 
 ### Phase 1: Establish the Review Target
 
-Determine whether the user wants to review:
+Determine both the review target and the output destination. Review targets can be:
 
 1. A GitHub PR, e.g. `PR #123`
 2. The current branch against a base branch, usually `main` or `master`
 3. Uncommitted local changes
 4. A specific set of files
 
-For GitHub PRs, gather PR metadata and diff with `gh` when available:
+Output destination rules:
+
+1. Direct GitHub PR URL, e.g. `https://github.com/OWNER/REPO/pull/123` — post one PR comment by default.
+2. GitHub PR number or shorthand, e.g. `PR #123` — print to terminal unless the user explicitly asks to post.
+3. Local branch, uncommitted, or file-only review — print to terminal unless the user explicitly asks to post and provides a PR target.
+4. Any explicit "do not post" wording — print to terminal only.
+
+For direct GitHub PR URLs with posting enabled, run `gh auth status` before resolving PR metadata. If `gh` is unavailable or auth fails, mark posting unavailable, continue terminal-only when the PR diff can still be gathered, and include the failure reason with the terminal review.
+
+For GitHub PRs, gather PR metadata and diff with `gh` when available. Use the PR URL when one was provided:
 
 ```bash
-gh pr view <number> --json title,body,author,baseRefName,headRefName,files,commits,url
-gh pr diff <number>
+gh auth status
+gh pr view <url-or-number> --json title,body,author,baseRefName,headRefName,files,commits,url
+gh pr diff <url-or-number>
 ```
 
 For local branch reviews, inspect the merge base and diff:
@@ -159,20 +172,26 @@ After all issues, include:
 
 If no issues are found, say so clearly and include a brief positive summary of what looked good.
 
-## Posting to GitHub
+## GitHub PR Posting
 
-If the user asks to post the review, ask for confirmation before posting.
+When posting is permitted, use one normal PR comment by default. Do not create inline comments unless the user explicitly asks for them.
 
-Preferred simple review:
+Posting workflow:
 
-```bash
-gh pr review <PR_NUMBER> --comment --body-file review.md
+1. Run `gh auth status`.
+2. If auth fails or `gh` is unavailable, print the full review to the terminal and include the failure reason.
+3. Resolve PR metadata with `gh pr view <url-or-number> --json title,body,author,baseRefName,headRefName,files,commits,url`.
+4. Generate the same findings and overall assessment you would produce for a terminal review.
+5. Write the GitHub comment body to a temporary Markdown file.
+6. Post with `gh pr comment <url-or-number> --body-file <tmp-review.md>`.
+7. If posting fails, print the full review to the terminal and include the posting error.
+
+The posted comment must include the summary and statistics at the top, followed by one collapsible `<details>` section per finding. Each `<summary>` line must use:
+
+```markdown
+[Severity] File:line - issue title
 ```
 
-Fallback single comment:
+Each details section must include the problem, impact, suggested fix, and handoff prompt. See `REFERENCE.md` for the exact GitHub comment template and fallback commands.
 
-```bash
-gh pr comment <PR_NUMBER> --body-file review.md
-```
-
-For line-specific comments, use the GitHub API only when the user explicitly wants inline comments.
+For terminal-only reviews, use the standard output format above.
