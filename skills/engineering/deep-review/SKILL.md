@@ -1,6 +1,6 @@
 ---
 name: deep-review
-description: Perform a maximally thorough, CodeRabbit-style code review that fans out one focused sub-agent per changed file, runs every available linter/SAST/secret scanner, and reports every issue down to nitpicks. Use when the user asks for a deep, exhaustive, thorough, or nitpick-level review, a CodeRabbit-style review, to "find everything", to "leave no stone unturned", or wants maximum coverage on a PR or branch. Optimizes for recall; some noise is acceptable. For a fast, conservative, senior-engineer review that flags only what matters, use code-review instead.
+description: Perform a maximally thorough, CodeRabbit-style code review that fans out one focused sub-agent per changed file, runs every available linter/SAST/secret scanner, and reports every issue down to nitpicks. Use for /deep-review or when the user asks for a deep, exhaustive, thorough, or nitpick-level review, a CodeRabbit-style review, to "find everything", to "leave no stone unturned", or wants maximum coverage on a PR or branch. Optimizes for recall; some noise is acceptable. For a fast, conservative, senior-engineer review that flags only what matters, use code-review instead.
 ---
 
 # Deep Review
@@ -12,6 +12,7 @@ This skill optimizes for **recall, not precision**. Some noise is expected and a
 ## Use Cases
 
 ```bash
+/deep-review https://github.com/OWNER/REPO/pull/123
 Exhaustively review PR #123 — find everything
 /skill:deep-review https://github.com/OWNER/REPO/pull/123
 CodeRabbit-style deep review of the current branch

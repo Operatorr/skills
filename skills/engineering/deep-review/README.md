@@ -12,6 +12,7 @@ Maximally thorough, CodeRabbit-style code review for GitHub PRs and local branch
 ## Example prompts
 
 ```text
+/deep-review https://github.com/OWNER/REPO/pull/123
 /skill:deep-review https://github.com/OWNER/REPO/pull/123
 Exhaustively review PR #123 — find everything.
 CodeRabbit-style deep review of the current branch.

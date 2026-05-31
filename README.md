@@ -60,7 +60,7 @@ skills/<category>/<skill-name>/SKILL.md
 
 ### Engineering
 
-- **[code-review](./skills/engineering/code-review/SKILL.md)** — deep, context-aware reviews for GitHub PRs and local branch changes, with severity-ranked findings and handoff prompts. Built for when you need code reviews but don't want to pay for CodeRabbit Pro ($30/mo/user) — not as good, but pretty decent.
+- **[code-review](./skills/engineering/code-review/SKILL.md)** — fast, light reviews for GitHub PRs and local branch changes, usually surfacing only the top 1-3 material issues. Built for when you want quick senior-engineer signal without exhaustive CodeRabbit-style coverage.
 - **[deep-review](./skills/engineering/deep-review/SKILL.md)** — the high-recall counterpart to code-review: a maximally thorough, CodeRabbit-style review that fans out one sub-agent per changed file, runs every available linter/SAST/secret scanner, and reports every issue down to nitpicks. Optimizes for coverage over signal-to-noise — closes most of the gap with CodeRabbit when you want to find everything.
 - **[git-commit](./skills/engineering/git-commit/SKILL.md)** — stage all changes and create a git commit with an auto-generated, convention-matched message.
 - **[git-pr](./skills/engineering/git-pr/SKILL.md)** — branch off master/develop when needed, commit all changes, push, and open a PR automatically.
