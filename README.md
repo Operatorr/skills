@@ -44,6 +44,8 @@ Then pick the skills you want to install into your coding agent.
 │   │   └── git-pr/
 │   │       └── SKILL.md
 │   ├── productivity/      # general workflow skills
+│   │   └── rewrite/
+│   │       └── SKILL.md
 │   └── misc/              # occasional-use skills
 ├── CLAUDE.md              # optional agent instructions for this repo
 ├── CONTEXT.md             # shared vocabulary / repo context
@@ -67,7 +69,7 @@ skills/<category>/<skill-name>/SKILL.md
 
 ### Productivity
 
-None yet.
+- **[rewrite](./skills/productivity/rewrite/SKILL.md)** — rewrite or generate copy in a plain, human voice that avoids AI tells: inflated significance, stock vocabulary, trailing "-ing" why-it-matters clauses, "not just X but Y" parallelism, autopilot rule-of-three, and chatbot filler.
 
 ### Misc
 

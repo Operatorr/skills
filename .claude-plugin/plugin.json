@@ -7,6 +7,7 @@
     "./skills/engineering/code-review",
     "./skills/engineering/deep-review",
     "./skills/engineering/git-commit",
-    "./skills/engineering/git-pr"
+    "./skills/engineering/git-pr",
+    "./skills/productivity/rewrite"
   ]
 }
