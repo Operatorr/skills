@@ -79,6 +79,12 @@ skills/<category>/<skill-name>/SKILL.md
 
 - **[penetration-testing](./skills/security/penetration-testing/SKILL.md)** — authorized security assessments of owned infrastructure (traditional hosts and managed/serverless/BaaS), gated on written scope, validated non-destructively, producing an OWASP/CWE/CVSS-mapped remediation report.
 
+  Usage:
+
+  ```text
+  /penetration-testing pentest app.example.com, I own it
+  ```
+
 ### Misc
 
 None yet.
