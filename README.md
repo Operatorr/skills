@@ -46,6 +46,10 @@ Then pick the skills you want to install into your coding agent.
 │   ├── productivity/      # general workflow skills
 │   │   └── rewrite/
 │   │       └── SKILL.md
+│   ├── security/          # authorized security assessments
+│   │   └── penetration-testing/
+│   │       ├── SKILL.md
+│   │       └── references/
 │   └── misc/              # occasional-use skills
 ├── CLAUDE.md              # optional agent instructions for this repo
 ├── CONTEXT.md             # shared vocabulary / repo context
@@ -71,6 +75,10 @@ skills/<category>/<skill-name>/SKILL.md
 
 - **[rewrite](./skills/productivity/rewrite/SKILL.md)** — rewrite or generate copy in a plain, human voice that avoids AI tells: inflated significance, stock vocabulary, trailing "-ing" why-it-matters clauses, "not just X but Y" parallelism, autopilot rule-of-three, and chatbot filler.
 
+### Security
+
+- **[penetration-testing](./skills/security/penetration-testing/SKILL.md)** — authorized security assessments of owned infrastructure (traditional hosts and managed/serverless/BaaS), gated on written scope, validated non-destructively, producing an OWASP/CWE/CVSS-mapped remediation report.
+
 ### Misc
 
 None yet.
@@ -85,10 +93,10 @@ List skills locally:
 
 ## Adding a skill
 
-1. Create a directory at `skills/<category>/<skill-name>/`.
+1. Create a directory at `skills/<category>/<skill-name>/`. Categories are `engineering`, `productivity`, `security`, and `misc`.
 2. Add `SKILL.md` with the skill instructions.
 3. Add any supporting examples, scripts, or reference docs inside the same skill directory.
-4. Update the reference list in this README.
+4. Update the reference list in this README, the category `README.md` under `skills/<category>/`, and the path in `.claude-plugin/plugin.json`.
 
 ## Demo
 

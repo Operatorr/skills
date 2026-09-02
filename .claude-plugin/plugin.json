@@ -8,6 +8,7 @@
     "./skills/engineering/deep-review",
     "./skills/engineering/git-commit",
     "./skills/engineering/git-pr",
-    "./skills/productivity/rewrite"
+    "./skills/productivity/rewrite",
+    "./skills/security/penetration-testing"
   ]
 }

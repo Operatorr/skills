@@ -15,4 +15,4 @@ Guidelines:
 - Use kebab-case directory names.
 - Keep each skill focused on one repeatable workflow.
 - Put supporting files inside the same skill directory.
-- Update the root `README.md` when adding or renaming skills.
+- Update the root `README.md`, the category `README.md`, and `.claude-plugin/plugin.json` when adding or renaming skills.

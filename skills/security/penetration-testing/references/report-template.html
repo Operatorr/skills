@@ -1,0 +1,438 @@
+<!--
+  ============================================================================
+  PENETRATION TEST REPORT — REUSABLE HTML TEMPLATE
+  ============================================================================
+  How to use (Phase 6):
+    1. Copy this file to the engagement workspace as REPORT.html.
+    2. Replace every {{PLACEHOLDER}} with real content from the assessment.
+    3. Duplicate the <article class="finding …"> block once per finding,
+       ranked worst-first. Set its class to one of:
+           crit | high | med | low | info
+       and use the matching <span class="chip …"> for the severity pill.
+    4. Update the four severity count tiles + the glance table to match the
+       real finding set. Delete sections that don't apply (e.g. "done well"
+       if there is genuinely nothing — but there usually is).
+    5. Keep the <title> a short product-style name (e.g. "<App> Security
+       Assessment"), not a sentence.
+    6. Do NOT paste raw secrets/PII into this file — reference redacted
+       evidence files in raw/ instead, exactly as the source REPORT.md does.
+    7. The CSS below is the design system — do not restyle it per engagement;
+       only swap content. It ships light+dark themes and a print stylesheet.
+  Severity levels supported by the design: Critical, High, Medium, Low, Info,
+  plus a "good/hardened" green used only in the "What's already done well" box.
+  ============================================================================
+-->
+<title>{{APP_NAME}} Security Assessment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --ground:#eef1f6; --surface:#ffffff; --surface-2:#f2f5f9; --code:#f4f6fa;
+    --ink:#14171d; --ink-2:#414855; --faint:#6b7482; --border:#dde3ec; --border-2:#eaeef4;
+    --accent:#3457d5; --accent-2:#4361d8;
+    --crit:#c0231f; --crit-bg:#fbe9e8; --crit-line:#d43a34;
+    --high:#b8540d; --high-bg:#fbeede; --high-line:#e0731d;
+    --med:#9a5b06; --med-bg:#f9f0da; --med-line:#d0921a;
+    --low:#1c4fd6; --low-bg:#e7eefc; --low-line:#4c76e6;
+    --info:#4f5a6b; --info-bg:#eaedf2; --info-line:#8b95a4;
+    --good:#136c3f; --good-bg:#e4f2ea; --good-line:#2f9c67;
+    --shadow:0 1px 2px rgba(20,30,50,.05),0 6px 20px -12px rgba(20,30,50,.22);
+    --measure:72ch;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --ground:#0d1017; --surface:#151a22; --surface-2:#1a2029; --code:#0f141b;
+      --ink:#e8ecf2; --ink-2:#aeb7c4; --faint:#7c8695; --border:#27303c; --border-2:#1f2833;
+      --accent:#8098ff; --accent-2:#93a7ff;
+      --crit:#ff7369; --crit-bg:#291315; --crit-line:#b93b34;
+      --high:#ff9d4d; --high-bg:#271a0e; --high-line:#a5641f;
+      --med:#e6b23c; --med-bg:#24200f; --med-line:#8a6a1c;
+      --low:#84a6ff; --low-bg:#131d34; --low-line:#3b5aa8;
+      --info:#9aa5b4; --info-bg:#1b232e; --info-line:#4a5567;
+      --good:#5fd08c; --good-bg:#10241a; --good-line:#2c7a52;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -16px rgba(0,0,0,.7);
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0d1017; --surface:#151a22; --surface-2:#1a2029; --code:#0f141b;
+    --ink:#e8ecf2; --ink-2:#aeb7c4; --faint:#7c8695; --border:#27303c; --border-2:#1f2833;
+    --accent:#8098ff; --accent-2:#93a7ff;
+    --crit:#ff7369; --crit-bg:#291315; --crit-line:#b93b34;
+    --high:#ff9d4d; --high-bg:#271a0e; --high-line:#a5641f;
+    --med:#e6b23c; --med-bg:#24200f; --med-line:#8a6a1c;
+    --low:#84a6ff; --low-bg:#131d34; --low-line:#3b5aa8;
+    --info:#9aa5b4; --info-bg:#1b232e; --info-line:#4a5567;
+    --good:#5fd08c; --good-bg:#10241a; --good-line:#2c7a52;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -16px rgba(0,0,0,.7);
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--ground); color:var(--ink);
+    font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:920px; margin:0 auto; padding:clamp(20px,4vw,56px) clamp(16px,4vw,40px) 96px}
+  a{color:var(--accent); text-decoration:none}
+  a:hover{text-decoration:underline}
+  code,kbd,samp,.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:3px}
+
+  /* ---------- masthead ---------- */
+  .eyebrow{font-family:"IBM Plex Mono",monospace; font-size:.72rem; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--accent); font-weight:500}
+  .masthead{border-bottom:1px solid var(--border); padding-bottom:28px; margin-bottom:34px}
+  .masthead h1{font-size:clamp(1.9rem,4.6vw,2.9rem); line-height:1.08; font-weight:700;
+    letter-spacing:-.02em; margin:.5rem 0 .2rem; text-wrap:balance}
+  .masthead .sub{color:var(--ink-2); font-size:1.06rem; margin:0 0 22px; max-width:var(--measure)}
+  .meta{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:1px;
+    background:var(--border); border:1px solid var(--border); border-radius:10px; overflow:hidden}
+  .meta div{background:var(--surface); padding:11px 14px}
+  .meta dt{font-family:"IBM Plex Mono",monospace; font-size:.64rem; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--faint); margin:0 0 3px}
+  .meta dd{margin:0; font-size:.9rem; font-weight:500; word-break:break-word}
+  .meta dd.mono{font-size:.82rem}
+
+  /* ---------- section scaffold ---------- */
+  section{margin-top:52px}
+  .sec-head{display:flex; align-items:baseline; gap:12px; margin-bottom:18px}
+  .sec-head .n{font-family:"IBM Plex Mono",monospace; font-size:.8rem; color:var(--faint);
+    font-weight:500; padding-top:.15rem}
+  h2{font-size:1.5rem; font-weight:600; letter-spacing:-.01em; margin:0; text-wrap:balance}
+  h3{font-size:1.12rem; font-weight:600; margin:0}
+  p{max-width:var(--measure)}
+  .lead{font-size:1.02rem; color:var(--ink-2)}
+  strong{font-weight:600}
+
+  /* ---------- severity tiles ---------- */
+  .tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px; margin:22px 0}
+  .tile{background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px 16px 14px; box-shadow:var(--shadow); position:relative; overflow:hidden}
+  .tile::before{content:""; position:absolute; left:0; top:0; bottom:0; width:4px; background:var(--tc,var(--info-line))}
+  .tile .num{font-size:2.1rem; font-weight:700; line-height:1; font-variant-numeric:tabular-nums; letter-spacing:-.02em}
+  .tile .lbl{font-family:"IBM Plex Mono",monospace; font-size:.66rem; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--faint); margin-top:8px}
+  .tile.c-crit{--tc:var(--crit-line)} .tile.c-crit .num{color:var(--crit)}
+  .tile.c-high{--tc:var(--high-line)} .tile.c-high .num{color:var(--high)}
+  .tile.c-med{--tc:var(--med-line)} .tile.c-med .num{color:var(--med)}
+  .tile.c-low{--tc:var(--low-line)} .tile.c-low .num{color:var(--low)}
+  .tile.c-info{--tc:var(--info-line)} .tile.c-info .num{color:var(--info)}
+
+  /* ---------- chips ---------- */
+  .chip{display:inline-flex; align-items:center; gap:6px; font-family:"IBM Plex Mono",monospace;
+    font-size:.68rem; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+    padding:3px 9px; border-radius:999px; white-space:nowrap}
+  .chip.crit{color:var(--crit); background:var(--crit-bg)}
+  .chip.high{color:var(--high); background:var(--high-bg)}
+  .chip.med{color:var(--med); background:var(--med-bg)}
+  .chip.low{color:var(--low); background:var(--low-bg)}
+  .chip.info{color:var(--info); background:var(--info-bg)}
+  .chip.good{color:var(--good); background:var(--good-bg)}
+  .chip .dot{width:7px; height:7px; border-radius:50%; background:currentColor}
+
+  /* ---------- glance table ---------- */
+  .glance{width:100%; border-collapse:collapse; margin-top:8px; font-size:.94rem}
+  .glance thead th{font-family:"IBM Plex Mono",monospace; font-size:.64rem; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--faint); text-align:left; font-weight:500;
+    padding:0 12px 8px; border-bottom:1px solid var(--border)}
+  .glance td{padding:12px; border-bottom:1px solid var(--border-2); vertical-align:top}
+  .glance tr:last-child td{border-bottom:none}
+  .glance td.id{font-family:"IBM Plex Mono",monospace; font-weight:600; color:var(--ink); white-space:nowrap}
+  .glance td.sv{white-space:nowrap}
+  .glance .desc{color:var(--ink-2)}
+  .glance tbody tr:hover td{background:var(--surface-2)}
+
+  /* ---------- callout ---------- */
+  .callout{border:1px solid var(--border); border-left:4px solid var(--accent); background:var(--surface);
+    border-radius:0 10px 10px 0; padding:16px 20px; margin:22px 0; box-shadow:var(--shadow)}
+  .callout.good{border-left-color:var(--good-line)}
+  .callout p{margin:.4rem 0; max-width:none}
+  .callout .k{font-weight:600}
+
+  /* ---------- finding card ---------- */
+  .finding{background:var(--surface); border:1px solid var(--border); border-radius:14px;
+    box-shadow:var(--shadow); margin:20px 0; overflow:hidden; position:relative}
+  .finding::before{content:""; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--fc,var(--info-line))}
+  .finding.crit{--fc:var(--crit-line)} .finding.high{--fc:var(--high-line)}
+  .finding.med{--fc:var(--med-line)} .finding.low{--fc:var(--low-line)} .finding.info{--fc:var(--info-line)}
+  .f-head{padding:20px 24px 16px; border-bottom:1px solid var(--border-2)}
+  .f-title{display:flex; flex-wrap:wrap; align-items:center; gap:10px 12px}
+  .f-title .fid{font-family:"IBM Plex Mono",monospace; font-weight:600; color:var(--faint); font-size:.9rem}
+  .f-title h3{flex:1 1 auto; min-width:220px}
+  .f-body{padding:8px 24px 22px}
+  .f-body h4{font-family:"IBM Plex Mono",monospace; font-size:.68rem; letter-spacing:.11em;
+    text-transform:uppercase; color:var(--faint); font-weight:600; margin:22px 0 7px}
+  .f-body p{margin:.3rem 0}
+  .f-body ul{margin:.4rem 0; padding-left:1.15rem; max-width:var(--measure)}
+  .f-body li{margin:.3rem 0}
+
+  .fmeta{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px;
+    background:var(--border-2); border:1px solid var(--border-2); border-radius:9px; overflow:hidden; margin-top:16px}
+  .fmeta div{background:var(--surface-2); padding:9px 13px}
+  .fmeta dt{font-family:"IBM Plex Mono",monospace; font-size:.6rem; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--faint); margin:0 0 2px}
+  .fmeta dd{margin:0; font-size:.83rem; font-weight:500; word-break:break-word}
+  .fmeta dd.vec{font-family:"IBM Plex Mono",monospace; font-size:.72rem}
+
+  pre{background:var(--code); border:1px solid var(--border); border-radius:9px; padding:14px 16px;
+    overflow-x:auto; margin:.5rem 0; font-size:.8rem; line-height:1.55}
+  pre code{font-family:"IBM Plex Mono",monospace; color:var(--ink-2)}
+  :not(pre)>code{background:var(--code); border:1px solid var(--border-2); border-radius:5px;
+    padding:.08em .38em; font-size:.85em; color:var(--ink); word-break:break-word}
+  .ev-note{font-size:.82rem; color:var(--faint); margin-top:.3rem}
+  mark{background:var(--crit-bg); color:var(--crit); padding:.02em .3em; border-radius:4px; font-weight:600}
+
+  /* ---------- checklist ---------- */
+  .cl-group{margin:18px 0}
+  .cl-group>.gl{font-family:"IBM Plex Mono",monospace; font-size:.68rem; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--faint); font-weight:600; margin-bottom:8px}
+  .cl{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px}
+  .cl li{display:flex; gap:11px; align-items:flex-start; background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; padding:11px 14px; box-shadow:var(--shadow)}
+  .cl .box{flex:none; width:16px; height:16px; border:1.5px solid var(--faint); border-radius:4px; margin-top:3px}
+  .cl .txt{flex:1; font-size:.92rem}
+  .cl .sev{flex:none}
+
+  hr.div{border:none; border-top:1px solid var(--border); margin:34px 0}
+
+  /* appendix list */
+  .files{list-style:none; margin:12px 0 0; padding:0; display:flex; flex-direction:column; gap:6px}
+  .files li{font-size:.88rem; display:flex; gap:10px; align-items:baseline}
+  .files .fn{font-family:"IBM Plex Mono",monospace; color:var(--ink); font-weight:500}
+  .files .fd{color:var(--ink-2)}
+  .sensitive{color:var(--crit); font-weight:600}
+
+  .foot{margin-top:56px; padding-top:20px; border-top:1px solid var(--border); color:var(--faint); font-size:.8rem}
+  .foot .mono{font-size:.76rem}
+
+  /* theme toggle */
+  .toggle{position:fixed; top:14px; right:14px; z-index:10; background:var(--surface); color:var(--ink-2);
+    border:1px solid var(--border); border-radius:999px; padding:7px 13px; font-size:.72rem;
+    font-family:"IBM Plex Mono",monospace; letter-spacing:.05em; cursor:pointer; box-shadow:var(--shadow)}
+  .toggle:hover{color:var(--ink)}
+  @media (max-width:560px){ .toggle{position:absolute} .f-head,.f-body{padding-left:18px; padding-right:18px} }
+  @media print{ .toggle{display:none} .finding,.tile,.cl li,.callout{box-shadow:none} body{background:#fff} }
+</style>
+
+<button class="toggle" id="themeBtn" type="button" aria-label="Toggle color theme">◐ theme</button>
+
+<div class="wrap">
+
+  <!-- ========================= MASTHEAD ========================= -->
+  <header class="masthead">
+    <div class="eyebrow">Penetration Test Report · Confidential</div>
+    <h1>{{APP_NAME}} — Security Assessment</h1>
+    <!-- One or two sentences: the headline risk in plain words. -->
+    <p class="sub"><code>{{TARGET_URL}}</code> — {{ONE_LINE_HEADLINE}}</p>
+    <dl class="meta">
+      <div><dt>Target</dt><dd class="mono">{{TARGET_URL}}</dd></div>
+      <div><dt>Host</dt><dd class="mono">{{HOST_IP_AND_LOCATION}}</dd></div>
+      <div><dt>Environment</dt><dd>{{PROD_OR_STAGING}}</dd></div>
+      <div><dt>Test date</dt><dd>{{YYYY-MM-DD}}</dd></div>
+      <div><dt>Tester</dt><dd>{{TESTER}}</dd></div>
+      <div><dt>Authorization</dt><dd>{{AUTH_REFERENCE}}</dd></div>
+    </dl>
+  </header>
+
+  <!-- ========================= 01 · EXECUTIVE SUMMARY ========================= -->
+  <section id="summary" style="margin-top:14px">
+    <div class="sec-head"><span class="n">01</span><h2>Executive summary</h2></div>
+
+    <!-- Count tiles: show only the severities that occur; keep them in worst-first
+         order. Available tile classes: c-crit c-high c-med c-low c-info -->
+    <div class="tiles">
+      <div class="tile c-crit"><div class="num">{{N_CRIT}}</div><div class="lbl">Critical</div></div>
+      <div class="tile c-high"><div class="num">{{N_HIGH}}</div><div class="lbl">High</div></div>
+      <div class="tile c-med"><div class="num">{{N_MED}}</div><div class="lbl">Medium</div></div>
+      <div class="tile c-low"><div class="num">{{N_LOW}}</div><div class="lbl">Low</div></div>
+      <div class="tile c-info"><div class="num">{{N_INFO}}</div><div class="lbl">Info</div></div>
+    </div>
+
+    <p class="lead">{{PARAGRAPH: overall risk in plain words for a non-security stakeholder — how bad, and the shape of the problem.}}</p>
+
+    <!-- Findings at a glance: one row per finding, ranked worst-first. -->
+    <table class="glance">
+      <thead><tr><th>ID</th><th>Severity</th><th>Finding</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="id"><a href="#f1">F1</a></td>
+          <td class="sv"><span class="chip crit"><span class="dot"></span>Critical</span></td>
+          <td class="desc">{{ONE_LINE_FINDING_SUMMARY}}</td>
+        </tr>
+        <!-- TEMPLATE ROW — duplicate per finding; swap chip class + severity word:
+             crit=Critical · high=High · med=Medium · low=Low · info=Info -->
+        <tr>
+          <td class="id"><a href="#f2">F2</a></td>
+          <td class="sv"><span class="chip high"><span class="dot"></span>High</span></td>
+          <td class="desc">{{ONE_LINE_FINDING_SUMMARY}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <p><span class="k">Fix these now, in order:</span></p>
+      <p>1 · {{TOP_FIX_1}}<br>
+         2 · {{TOP_FIX_2}}<br>
+         3 · {{TOP_FIX_3}}</p>
+    </div>
+
+    <p><strong>Overall posture.</strong> {{PARAGRAPH: honest posture — name what is done well AND the core gap; where the real risk concentrates.}}</p>
+
+    <!-- Optional scope-note callout (e.g. out-of-scope siblings, shared infra). Delete if unused. -->
+    <div class="callout">
+      <p><span class="k">{{NOTE_TITLE}}.</span> {{NOTE_BODY}}</p>
+    </div>
+  </section>
+
+  <!-- ========================= 02 · SCOPE & METHOD ========================= -->
+  <section id="scope">
+    <div class="sec-head"><span class="n">02</span><h2>Scope &amp; method</h2></div>
+    <ul style="max-width:var(--measure)">
+      <li><strong>In scope:</strong> {{IN_SCOPE_TARGETS}}</li>
+      <li><strong>Out of scope / not tested:</strong> {{OUT_OF_SCOPE}}</li>
+      <li><strong>Scope note:</strong> {{ANY_OWNERSHIP_OR_INFRA_CLARIFICATION}}</li>
+      <li><strong>Method:</strong> OWASP-aligned phases — passive recon → port/service map → vulnerability analysis → <strong>least-impact validation</strong> → impact analysis → report.</li>
+      <li><strong>Not performed by discipline:</strong> {{THINGS_DELIBERATELY_NOT_DONE — e.g. exploitation of write endpoints, use of leaked secrets, data dumping. PII masked, not retained.}}</li>
+    </ul>
+    <h4 style="font-family:'IBM Plex Mono',monospace;font-size:.68rem;letter-spacing:.11em;text-transform:uppercase;color:var(--faint);margin:20px 0 6px">Exposed surface</h4>
+    <pre><code>{{PORT/SERVICE TABLE — e.g.:
+22/tcp   open   OpenSSH 9.x  — publickey-only
+443/tcp  open   nginx 1.x / TLS 1.2 + 1.3
+(N other ports firewall-filtered)}}</code></pre>
+  </section>
+
+  <!-- ========================= 03 · FINDINGS ========================= -->
+  <section id="findings">
+    <div class="sec-head"><span class="n">03</span><h2>Findings</h2></div>
+
+    <!-- ================= FINDING BLOCK — DUPLICATE PER FINDING =================
+         - Ranked worst-first; id="f1", "f2", … matches the glance-table anchors.
+         - Set <article class="finding SEV"> and the header chip to the SAME
+           severity: crit | high | med | low | info
+         - Fill only the metadata rows you have (drop the Vector row for Info).
+         - Evidence: reference redacted raw/ files; never paste secrets/PII.
+         - Standard subsections: Summary · Evidence · Impact · Remediation · Retest
+           (Info findings may omit Evidence/Impact/Retest).
+    ========================================================================== -->
+    <article class="finding crit" id="f1">
+      <div class="f-head">
+        <div class="f-title">
+          <span class="fid">F1</span>
+          <h3>{{FINDING_TITLE}}</h3>
+          <span class="chip crit"><span class="dot"></span>Critical</span>
+        </div>
+        <dl class="fmeta">
+          <div><dt>CVSS 3.1</dt><dd>{{SCORE}}</dd></div>
+          <div><dt>Vector</dt><dd class="vec">{{CVSS_VECTOR}}</dd></div>
+          <div><dt>CWE</dt><dd>{{CWE-nnn NAME}}</dd></div>
+          <div><dt>OWASP</dt><dd>{{OWASP_CATEGORY}}</dd></div>
+          <div><dt>Status</dt><dd>Confirmed</dd></div>
+        </dl>
+      </div>
+      <div class="f-body">
+        <h4>Summary</h4>
+        <p>{{One or two sentences: what the flaw is.}}</p>
+
+        <h4>Evidence</h4>
+        <pre><code>{{Request/response, command + output, or scan excerpt. Timestamped.
+Reference saved files in raw/ rather than pasting everything.}}</code></pre>
+        <p class="ev-note">{{How the proof was captured non-destructively; note masking. Use <mark>…</mark> to flag secrets confirmed-but-not-extracted.}}</p>
+
+        <h4>Impact</h4>
+        <p>{{What an attacker can actually do and the blast radius: data/function exposed, what else it reaches, preconditions. Chain to other findings by id where relevant.}}</p>
+
+        <h4>Remediation</h4>
+        <ul>
+          <li>{{Specific fix — config change, patch version, code pattern, control. Name settings, not "harden it".}}</li>
+          <li>{{…}}</li>
+        </ul>
+
+        <h4>Retest</h4>
+        <p>{{How to confirm it's fixed — which command/phase to re-run and the expected result.}}</p>
+      </div>
+    </article>
+    <!-- ================= END FINDING BLOCK ================= -->
+
+  </section>
+
+  <!-- ========================= 04 · WHAT'S ALREADY DONE WELL ========================= -->
+  <!-- Keep this — a fair report names the controls that ARE right. Delete only if truly none. -->
+  <section id="good">
+    <div class="sec-head"><span class="n">04</span><h2>What's already done well</h2></div>
+    <div class="callout good">
+      <p style="margin-top:0"><span class="chip good"><span class="dot"></span>Keep it</span></p>
+      <ul style="margin:.2rem 0 0;max-width:var(--measure)">
+        <li>{{POSITIVE_CONTROL_1}}</li>
+        <li>{{POSITIVE_CONTROL_2}}</li>
+      </ul>
+      <p style="margin-bottom:0">{{One line: where the real gap is vs. what's solid.}}</p>
+    </div>
+  </section>
+
+  <!-- ========================= 05 · REMEDIATION CHECKLIST ========================= -->
+  <section id="checklist">
+    <div class="sec-head"><span class="n">05</span><h2>Remediation checklist</h2></div>
+
+    <!-- Group quick config wins separately from structural fixes so the operator
+         can knock out cheap high-impact items first. Each item carries a severity
+         chip and the (Fx) finding id. -->
+    <div class="cl-group">
+      <div class="gl">Structural — do first</div>
+      <ul class="cl">
+        <li><span class="box"></span><span class="txt">{{FIX}} <span style="color:var(--faint)">(F1)</span></span><span class="sev chip crit">Critical</span></li>
+      </ul>
+    </div>
+
+    <div class="cl-group">
+      <div class="gl">Quick wins — config</div>
+      <ul class="cl">
+        <li><span class="box"></span><span class="txt">{{FIX}} <span style="color:var(--faint)">(Fx)</span></span><span class="sev chip low">Low</span></li>
+      </ul>
+    </div>
+
+    <div class="cl-group">
+      <div class="gl">Follow-up</div>
+      <ul class="cl">
+        <li><span class="box"></span><span class="txt">{{FOLLOW_UP_ITEM}}</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ========================= 06 · APPENDIX ========================= -->
+  <section id="appendix">
+    <div class="sec-head"><span class="n">06</span><h2>Appendix</h2></div>
+    <p>Full command/evidence trail is retained in the engagement workspace alongside this report.</p>
+    <ul class="files">
+      <li><span class="fn">roe.md</span><span class="fd">— Rules of Engagement / authorization</span></li>
+      <li><span class="fn">engagement-log.md</span><span class="fd">— timestamped commands + output pointers</span></li>
+      <li><span class="fn">raw/…</span><span class="fd">— scan &amp; recon output referenced by findings</span></li>
+      <!-- Flag any evidence file that holds secrets/PII: -->
+      <li><span class="fn">{{SENSITIVE_FILE}}</span><span class="fd">— <span class="sensitive">SENSITIVE: contains secrets/PII — store securely, delete after remediation</span></span></li>
+    </ul>
+    <p style="margin-top:18px"><strong>Retest offer.</strong> {{RETEST_OFFER}}</p>
+  </section>
+
+  <footer class="foot">
+    <p>Authorized, non-destructive security assessment · least-impact validation · no data exfiltrated, no records altered, no persistence.</p>
+    <p class="mono">{{TARGET_URL}} · {{HOST_IP}} · {{YYYY-MM-DD}} · Confidential — for the system owner.</p>
+  </footer>
+
+</div>
+
+<script>
+  /* Theme toggle: flips data-theme between light/dark on top of the viewer's default. */
+  (function(){
+    var btn=document.getElementById('themeBtn');
+    var root=document.documentElement;
+    function current(){
+      var t=root.getAttribute('data-theme');
+      if(t) return t;
+      return window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+    }
+    btn.addEventListener('click',function(){
+      root.setAttribute('data-theme', current()==='dark'?'light':'dark');
+    });
+  })();
+</script>
