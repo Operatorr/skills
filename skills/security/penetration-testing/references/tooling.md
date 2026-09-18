@@ -18,7 +18,7 @@ Placeholders: `TARGET` = a host/IP in scope, `URL` = an in-scope base URL, `outd
 | `whatweb` | Technology fingerprint of a web target | `whatweb -a 1 URL` |
 | Cert transparency | Find subdomains/hosts via issued certs | `curl -s "https://crt.sh/?q=%25.TARGET&output=json"` |
 
-Goal: a resolved, ownership-confirmed asset inventory. Cross-check every discovered host against the RoE before it moves to active phases.
+Goal: a resolved recon list of this run's in-scope hosts. Cross-check every discovered host against `roe.md` before it moves to active phases; names that are not on this run's list stay out until the operator adds them to `asset-inventory.md`.
 
 ## Map & scan
 

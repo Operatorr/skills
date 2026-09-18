@@ -66,8 +66,8 @@ skills/<category>/<skill-name>/SKILL.md
 
 ### Engineering
 
-- **[code-review](./skills/engineering/code-review/SKILL.md)** — fast, light reviews for GitHub PRs and local branch changes, usually surfacing only the top 1-3 material issues. Built for when you want quick senior-engineer signal without exhaustive CodeRabbit-style coverage.
-- **[deep-review](./skills/engineering/deep-review/SKILL.md)** — the high-recall counterpart to code-review: a maximally thorough, CodeRabbit-style review that fans out one sub-agent per changed file, runs every available linter/SAST/secret scanner, and reports every issue down to nitpicks. Optimizes for coverage over signal-to-noise — closes most of the gap with CodeRabbit when you want to find everything.
+- **[code-review](./skills/engineering/code-review/SKILL.md)** — thorough single-pass reviews for GitHub PRs and local branch changes that aim to catch every Critical, High, and Medium issue while skipping Low/Nit noise. Built for when you want a careful senior-engineer review without the length of exhaustive CodeRabbit-style coverage.
+- **[deep-review](./skills/engineering/deep-review/SKILL.md)** — the exhaustive counterpart to code-review: a maximally thorough, CodeRabbit-style review that fans out one sub-agent per changed file, runs every available linter/SAST/secret scanner, and reports every issue down to nitpicks. Optimizes for coverage over signal-to-noise — closes most of the gap with CodeRabbit when you want to find everything.
 - **[git-commit](./skills/engineering/git-commit/SKILL.md)** — stage all changes and create a git commit with an auto-generated, convention-matched message.
 - **[git-pr](./skills/engineering/git-pr/SKILL.md)** — branch off master/develop when needed, commit all changes, push, and open a PR automatically.
 
@@ -77,12 +77,21 @@ skills/<category>/<skill-name>/SKILL.md
 
 ### Security
 
-- **[penetration-testing](./skills/security/penetration-testing/SKILL.md)** — authorized security assessments of owned infrastructure (traditional hosts and managed/serverless/BaaS), gated on written scope, validated non-destructively, producing an OWASP/CWE/CVSS-mapped remediation report.
+- **[penetration-testing](./skills/security/penetration-testing/SKILL.md)** — authorized security assessments of owned infrastructure (traditional hosts and managed/serverless/BaaS), gated on standing org authorization plus an asset inventory, validated non-destructively, producing an OWASP/CWE/CVSS-mapped remediation report.
+
+  **Standing authorization (do this once, before invoking).** Copy the templates from `skills/security/penetration-testing/references/` into the **engagement workspace** (the directory you invoke the skill from), fill them, and save as `org-authorization.md` and `asset-inventory.md`. Same filenames under `security/` or `.security/` also work. Keep filled copies out of this skills repo.
+
+  ```bash
+  cp skills/security/penetration-testing/references/org-authorization.template.md /path/to/engagements/org-authorization.md
+  cp skills/security/penetration-testing/references/asset-inventory.template.md /path/to/engagements/asset-inventory.md
+  ```
+
+  When both files are present and filled, the skill skips the per-site ownership quiz and starts against inventory hosts — no DNS / Vercel / Cloudflare login required to begin. Hosts not on the inventory stay out of the run until you add them.
 
   Usage:
 
   ```text
-  /penetration-testing pentest app.example.com, I own it
+  /penetration-testing assess checkout.example.com api.example.com
   ```
 
 ### Misc

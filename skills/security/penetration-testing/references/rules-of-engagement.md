@@ -1,44 +1,79 @@
 # Rules of Engagement & authorization
 
-The RoE is the contract that makes this a pentest and not an intrusion. It is written **before** any target is touched, saved to the engagement workspace, and confirmed with the operator. No RoE, no testing.
+The RoE is the contract that makes this a pentest and not an intrusion. No RoE, no testing.
 
-## RoE template
+Authorization is **standing**: the operator drops `org-authorization.md` and `asset-inventory.md` in the workspace (including before the skill is invoked). This run then writes a short `roe.md` that names the inventory slice being tested. Do not quiz ownership per host, and do not require registrar or platform-dashboard login to start.
 
-Fill this out with the operator and save it (e.g. `roe.md`) in the engagement folder.
+Templates to copy: [`org-authorization.template.md`](org-authorization.template.md), [`asset-inventory.template.md`](asset-inventory.template.md).
+
+## Search paths
+
+From the workspace working directory, read the **first file that exists**. Do not treat files inside this skill’s `references/` directory as filled standing auth — those are templates.
+
+**Org authorization**
+
+1. `org-authorization.md`
+2. `security/org-authorization.md`
+3. `.security/org-authorization.md`
+
+**Asset inventory**
+
+1. `asset-inventory.md`
+2. `security/asset-inventory.md`
+3. `.security/asset-inventory.md`
+
+A file counts as present when it is readable and filled (authorization has a dated statement and a named grantor; inventory has at least one target row). A still-templated copy (`<org>`, `YYYY-MM-DD`, empty tables) is missing.
+
+## Phase 0 procedure
+
+1. Search the paths above.
+2. **Both present.** Intersect the operator’s requested hosts with the inventory (hostname, URL, or CIDR match, including inventory rows covered by an explicit inventory wildcard). Write `roe.md` for this run. Continue to Phase 1. Do not ask whether the operator owns inventory hosts. Do not ask them to log into DNS, Vercel, Cloudflare, Netlify, Wix, or any other dashboard to prove control.
+3. **Either missing.** Copy the templates into the workspace as `org-authorization.md` and `asset-inventory.md` (use `security/` instead if that folder already exists). Stop. Tell the operator to fill both files and re-invoke. Do not start probing. Do not replace the files with a multiple-choice ownership questionnaire.
+4. **Requested host not on the inventory.** Omit it from `roe.md`. Name the omitted hosts and say they become in-scope when added to the inventory file. Do not probe them.
+
+Dashboard access (DNS, Vercel, Cloudflare, etc.) is optional later, when the operator wants private config or source the public surface does not show. It is not a Phase 0 requirement.
+
+## Run RoE template
+
+Save as `roe.md` in the engagement workspace.
 
 ```
 # Rules of Engagement — <engagement name>
 
-Authorized by:   <name / role of person who can grant this>
-Date:            <YYYY-MM-DD>
-Tester:          <who is running the assessment>
-Authorization:   "I authorize security testing of the systems listed under
-                  In-Scope below, which are owned/controlled by <org>."
+Standing authorization: <path to org-authorization.md>
+Authorized by:          <copied from standing file>
+Standing date:          <copied from standing file>
+This run date:          <YYYY-MM-DD>
+Tester:                 <who is running this assessment>
 
-## In-scope targets
-- <IP / CIDR / hostname / URL>          <what it is>
+## In-scope this run
+- <inventory hostname / URL / CIDR>    <env>    <platform>    <what it is>
 - ...
 
 ## Explicitly out of scope
-- <hosts, subdomains, third-party services, shared infra, anything you do NOT own>
-- Any target not listed under In-scope.
+- Any target not listed under In-scope this run.
+- Provider infrastructure for managed platforms in this run (edge, runtime hosts, shared TLS, `/cdn-cgi/*`, other tenants).
+- <any extra exclusions for this run>
 
 ## Constraints
-- Test window(s):        <when active testing is allowed>
-- Production in scope?:  <yes/no — if yes, note extra caution + change window>
-- Rate limits:           <max scan intensity, any fragile services>
+- Test window(s):        <when active testing is allowed; inherit standing defaults unless this run overrides>
+- Production in scope?:  <yes/no per standing file and the env column of in-scope rows>
+- Rate limits:           <inherit standing defaults unless this run overrides>
 - Data handling:         no real customer data exfiltrated; benign markers only.
 
 ## Emergency stop
-- Stop condition:        <e.g. any outage, any sign of real-attacker activity>
-- Contact:               <name, phone/channel, reachable during the window>
+- Stop condition:        <inherit from standing file>
+- Contact:               <inherit from standing file>
 ```
 
-### Scope hygiene
-- **Only what the operator owns or controls.** Shared hosting, a CDN, a managed DB, an auth provider, a payment gateway — these are usually someone else's systems even if the operator's app uses them. They go out of scope unless the operator holds written authorization from that provider.
-- **A domain is not the host.** Testing `app.example.com` may hit infrastructure the operator does not own (e.g. a third-party SaaS the CNAME points to). Resolve first, confirm ownership of the resolved address, then test.
-- **Wildcards need care.** `*.example.com` can include forgotten or third-party-hosted subdomains. Enumerate, then confirm each is in scope before active testing.
-- **Managed / serverless / BaaS targets.** When the app runs on Vercel, Cloudflare, Netlify, Supabase, Firebase, Neon, etc., the operator owns the **application, its configuration, data, and keys** — the provider owns the infrastructure. Scope the engagement to the app/data layer and put the platform itself **out of scope**: no port-scanning or fuzzing the provider edge/runtime/DB host, no `/cdn-cgi/*`, no volumetric/DoS tests — that typically breaches the provider's acceptable-use / security-testing policy as well as being someone else's system. Record the provider(s) and note their testing policy in the RoE. Playbook: [`serverless-and-baas.md`](serverless-and-baas.md).
+For managed / serverless / BaaS rows, the in-scope line is the **application** (routes, functions, client bundle, config, data, keys). The platform itself stays in Explicitly out of scope. Playbook: [`serverless-and-baas.md`](serverless-and-baas.md).
+
+## Scope hygiene
+
+- **Inventory is the ownership record.** A host is in scope when it is on `asset-inventory.md` (and on this run’s list). Do not re-prove ownership via WHOIS, registrar screenshots, or dashboard sessions.
+- **A domain is not the host.** Testing `app.example.com` may hit infrastructure the inventory does not list (a third-party SaaS the CNAME points to). Resolve in Phase 1. If the resolved destination is not on the inventory, it stays out of active testing until the operator adds it.
+- **Wildcards need care.** An inventory row `*.example.com` still requires listing or confirming each name before active testing — forgotten or third-party-hosted subdomains are common. Enumerate, then only test names that are in-scope for this run.
+- **Managed / serverless / BaaS targets.** The operator owns the application, its configuration, data, and keys; the provider owns the infrastructure. No port-scanning or fuzzing the provider edge/runtime/DB host, no `/cdn-cgi/*`, no volumetric/DoS tests. Record the provider in `roe.md` and keep the platform out of scope.
 
 ## Branch — believed-compromised host (triage first)
 

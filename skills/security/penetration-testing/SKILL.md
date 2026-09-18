@@ -7,9 +7,10 @@ description: >-
   Netlify) and BaaS/DBaaS data layers (Supabase, Firebase, Neon, PlanetScale),
   not only VPS/traditional hosts. Use when the user asks to pentest,
   security-scan, vuln-assess, audit exposure, or harden their own
-  infrastructure — or to triage a host they believe is compromised. Gates hard
-  on written scope, validates non-destructively, and produces a
-  remediation-focused report mapped to OWASP/CWE/CVSS.
+  infrastructure — or to triage a host they believe is compromised. Gates on
+  standing org authorization plus an asset inventory, validates
+  non-destructively, and produces a remediation-focused report mapped to
+  OWASP/CWE/CVSS.
 ---
 
 # Authorized Penetration Testing
@@ -21,7 +22,7 @@ Two rules govern everything and are never waived:
 1. **In scope or it does not happen.** No packet leaves for a host that is not on the confirmed target list in the current Rules of Engagement. When unsure whether something is in scope, stop and ask — do not test to find out.
 2. **Least-impact.** Prefer passive over active, read over write, one proof over a hundred. You confirm a vulnerability is *real* with the smallest possible action, capture evidence, and move on. You never destroy data, degrade service, pivot to persistence, or exfiltrate real records.
 
-If a request pushes past authorized assessment — attacking a third party, a target the operator cannot show authorization for, weaponizing a finding for stealth/persistence against a live system, or mass-targeting — decline that piece in one sentence, state why (out of scope / unauthorized), and offer the in-scope alternative.
+If a request pushes past authorized assessment — attacking a third party, a target that is not on the asset inventory, weaponizing a finding for stealth/persistence against a live system, or mass-targeting — decline that piece in one sentence, state why (out of scope / unauthorized), and offer the in-scope alternative.
 
 ## Target types — traditional host vs. managed / serverless
 
@@ -34,21 +35,25 @@ When in doubt which shape you have, resolve the target first (Phase 1): if it la
 
 ## Phase 0 — Rules of Engagement (gate)
 
-**Do not scan, probe, or connect to any target until this phase is complete.** Read [`references/rules-of-engagement.md`](references/rules-of-engagement.md) and produce a written RoE with the operator covering: authorized targets (IPs, hostnames, CIDRs, URLs), explicit exclusions, allowed test windows, whether production is in scope, an emergency stop/contact, and a dated statement of authorization from someone who can grant it.
+**Do not scan, probe, or connect to any target until this phase is complete.** Read [`references/rules-of-engagement.md`](references/rules-of-engagement.md) and follow it.
 
-Write the RoE to a file in the engagement workspace and read the target list back to the operator for confirmation.
+Authorization is a **standing workspace record**, not a per-site quiz. Search the paths in that doc for `org-authorization.md` and `asset-inventory.md`.
+
+- **Both files already present:** treat them as the authorization record. Intersect the requested hosts with the inventory, write this run's `roe.md`, and continue. Do not ask the operator to prove ownership of inventory hosts. Do not require DNS / Vercel / Cloudflare (or other registrar/dashboard) login to start.
+- **Either file missing:** copy the templates into the workspace, stop, and wait for the operator to fill them. Do not start probing, and do not substitute a multiple-choice ownership questionnaire.
+- **Requested host not on the inventory:** leave it out of this run until the operator adds it to `asset-inventory.md`.
 
 **Branch — believed-compromised host.** If the target is a machine the operator thinks is *currently* hacked, do not pentest it as step one. An active intrusion means (a) you may collide with the attacker, (b) active scanning can overwrite the forensic trail of the initial entry, and (c) findings are unreliable while someone else is changing the box. Route to **triage first**: preserve evidence (snapshot/image, copy logs off-box), determine whether to isolate or rebuild, and treat the *rebuilt or isolated* system as the pentest target. See the compromise-triage section in [`references/rules-of-engagement.md`](references/rules-of-engagement.md).
 
-**Completion criterion:** a written RoE file exists listing authorized targets and a dated authorization statement, and the operator has confirmed the target list. Only then continue.
+**Completion criterion:** standing `org-authorization.md` and `asset-inventory.md` exist (search paths in the RoE doc), `roe.md` lists only inventory targets for this run, and — when those standing files were already present — no authorization questionnaire was used. Only then continue.
 
 ## Phase 1 — Recon (passive)
 
-Build a picture of the exposed surface *without touching the target where possible* — DNS, certificates, public metadata, technology fingerprint, exposed subdomains and ports as seen from outside. The goal is a complete **asset inventory**: every host, service, domain, and endpoint in scope, so nothing tested is a surprise and nothing in scope is missed.
+Build a picture of the exposed surface *without touching the target where possible* — DNS, certificates, public metadata, technology fingerprint, exposed subdomains and ports as seen from outside. The goal is a complete **recon list** of this run: every host, service, domain, and endpoint in `roe.md`, so nothing tested is a surprise and nothing in-scope is missed. Newly discovered names are not in-scope until they are on `asset-inventory.md` and this run's `roe.md`.
 
 Tools and commands: [`references/tooling.md`](references/tooling.md) → Recon.
 
-**Completion criterion:** an asset inventory listing every in-scope host with its resolved addresses, and — for web targets — discovered subdomains and a first-pass technology fingerprint.
+**Completion criterion:** a recon list of every in-scope host with its resolved addresses, and — for web targets — discovered subdomains and a first-pass technology fingerprint. Off-inventory discoveries are recorded and left untested.
 
 ## Phase 2 — Map & scan
 
