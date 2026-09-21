@@ -30,6 +30,8 @@ Then pick the skills you want to install into your coding agent.
 ├── scripts/               # repo maintenance scripts
 ├── skills/
 │   ├── engineering/       # code and engineering workflow skills
+│   │   ├── visual-review/
+│   │   │   └── SKILL.md
 │   │   ├── code-review/
 │   │   │   ├── SKILL.md
 │   │   │   ├── REFERENCE.md
@@ -66,6 +68,7 @@ skills/<category>/<skill-name>/SKILL.md
 
 ### Engineering
 
+- **[visual-review](./skills/engineering/visual-review/SKILL.md)** — inspect a PR's running UI through computer use for clipping, wrapping, uneven controls, spacing, responsive layout issues, and UX improvements. Reports screenshot evidence, concrete fixes, and optional redesign recommendations. Invoke with `/visual-review <PR URL>`.
 - **[code-review](./skills/engineering/code-review/SKILL.md)** — thorough single-pass reviews for GitHub PRs and local branch changes that aim to catch every Critical, High, and Medium issue while skipping Low/Nit noise. Built for when you want a careful senior-engineer review without the length of exhaustive CodeRabbit-style coverage.
 - **[deep-review](./skills/engineering/deep-review/SKILL.md)** — the exhaustive counterpart to code-review: a maximally thorough, CodeRabbit-style review that fans out one sub-agent per changed file, runs every available linter/SAST/secret scanner, and reports every issue down to nitpicks. Optimizes for coverage over signal-to-noise — closes most of the gap with CodeRabbit when you want to find everything.
 - **[git-commit](./skills/engineering/git-commit/SKILL.md)** — stage all changes and create a git commit with an auto-generated, convention-matched message.
