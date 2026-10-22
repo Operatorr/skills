@@ -1,6 +1,8 @@
 # Code Review Report
 
-Use this structure for local output and the single GitHub summary comment. Findings belong to separate axes; severity definitions live in [SKILL.md](SKILL.md). Keep coverage concise but substantive: name the scenarios examined, not just how many tests passed.
+Use this structure for local output and the single GitHub summary comment. Findings belong to separate axes; severity definitions live in [SKILL.md](SKILL.md). List verified Low findings individually after higher-severity findings within each axis, marked non-blocking by default. Preserve their evidence, consequence, fix direction, and verification scenario; do not suppress them under a Medium cutoff. Nit findings are excluded.
+
+Keep coverage concise but substantive: name the scenarios examined, not just how many tests passed.
 
 ```markdown
 # Code Review
@@ -21,10 +23,11 @@ Review mode: independent Standards/Spec reviewers plus main Bugs reviewer, or di
 
 ## Coverage and limits
 - Files: <reviewed count>/<total>; <excluded/unreviewed paths and reasons>.
-- Behavior traces: <entry point, ordinary/adverse inputs, result, evidence locations>.
+- Behavior traces: <entry point, ordinary/adverse inputs, result, evidence locations; partial setup and cleanup failure where applicable>.
+- Final adversarial check: <distinct scenario, result/evidence, or why none remains>.
 - Contracts/callers: <symbols and actual consumer paths inspected>.
 - Checks: <commands, pass/fail/not run and reasons; baseline vs new failures>.
-- Open questions / coverage gaps: <missing evidence and affected scope, or none>.
+- Open questions / coverage gaps: <unreviewed paths/behavior families, reason, and highest-risk next trace, or none>.
 
 ## Worst issue per axis
 - Bugs: <finding ID/severity, none confirmed, or incomplete>.

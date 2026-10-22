@@ -2,9 +2,9 @@
 
 Bounded review of GitHub PRs, branch diffs, uncommitted work, and named files across three separate axes: **Bugs**, **Standards**, and **Spec**.
 
-The main reviewer traces changed behavior, failure paths, and affected callers. Up to two independent reviewers check repository standards and documented requirements. The main reviewer verifies their claims before reporting. Missing specs are explicit; green tests alone cannot justify a clean report.
+The main reviewer traces changed behavior, failure paths, and affected callers. Up to two independent reviewers check repository standards and documented requirements. The main reviewer verifies their claims before reporting. Missing specs are explicit; green tests alone cannot justify a clean report. Side-effecting changes receive explicit partial-initialization and cleanup-failure traces, followed by a targeted search for sibling defects.
 
-Normal review uses one round, focused checks, and concrete Critical/High/Medium findings. It has no finding quota or guaranteed runtime. Use [`deep-review`](../deep-review/SKILL.md) for per-file delegation, broad scanners, and Low/Nit coverage.
+Normal review uses one round, focused checks, and concrete Critical/High/Medium/Low findings. It has no finding quota or guaranteed runtime. Use [`deep-review`](../deep-review/SKILL.md) for per-file delegation, broad scanners, and Nit coverage. Low findings require a concrete consequence and are non-blocking by default; cosmetic Nit feedback remains outside normal review.
 
 ## Files
 
@@ -24,3 +24,7 @@ Review https://github.com/OWNER/REPO/pull/123 but do not post.
 ```
 
 A branch review requires a fixed point; a PR supplies its own base. Branch comparisons use the merge base and exclude uncommitted changes unless requested. A direct PR URL permits one summary comment unless posting is disabled; other targets remain local unless posting is requested.
+
+## Installation completeness
+
+Install or copy the whole `code-review/` directory, not only `SKILL.md`. The workflow uses `AXIS_PROMPTS.md` and `REFERENCE.md`; omitting them degrades reviewer briefs and reporting.
