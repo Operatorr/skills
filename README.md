@@ -69,7 +69,7 @@ skills/<category>/<skill-name>/SKILL.md
 ### Engineering
 
 - **[visual-review](./skills/engineering/visual-review/SKILL.md)** — inspect a PR's running UI through computer use for clipping, wrapping, uneven controls, spacing, responsive layout issues, and UX improvements. Reports screenshot evidence, concrete fixes, and optional redesign recommendations. Invoke with `/visual-review <PR URL>`.
-- **[code-review](./skills/engineering/code-review/SKILL.md)** — thorough single-pass reviews for GitHub PRs and local branch changes that aim to catch every Critical, High, and Medium issue while skipping Low/Nit noise. Built for when you want a careful senior-engineer review without the length of exhaustive CodeRabbit-style coverage.
+- **[code-review](./skills/engineering/code-review/SKILL.md)** — bounded bug hunting with independent Standards and Spec reviewers, concrete behavior traces, and verified Critical/High/Medium findings; no per-file fan-out or scanner battery.
 - **[deep-review](./skills/engineering/deep-review/SKILL.md)** — the exhaustive counterpart to code-review: a maximally thorough, CodeRabbit-style review that fans out one sub-agent per changed file, runs every available linter/SAST/secret scanner, and reports every issue down to nitpicks. Optimizes for coverage over signal-to-noise — closes most of the gap with CodeRabbit when you want to find everything.
 - **[git-commit](./skills/engineering/git-commit/SKILL.md)** — stage all changes and create a git commit with an auto-generated, convention-matched message.
 - **[git-pr](./skills/engineering/git-pr/SKILL.md)** — branch off master/develop when needed, commit all changes, push, and open a PR automatically.

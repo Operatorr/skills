@@ -23,4 +23,4 @@ Nitpick-level review of these local changes, terminal only.
 ## When to use which
 
 - **deep-review** — maximum coverage; you want every issue including nitpicks, accept some noise.
-- **[code-review](../code-review/SKILL.md)** — fast, conservative, senior-engineer review that flags only what matters.
+- **[code-review](../code-review/SKILL.md)** — bounded bug hunting with independent Standards and Spec checks, focused verification, and no scanner battery.

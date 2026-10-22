@@ -1,6 +1,6 @@
 ---
 name: deep-review
-description: Perform a maximally thorough, CodeRabbit-style code review that fans out one focused sub-agent per changed file, runs every available linter/SAST/secret scanner, and reports every issue down to nitpicks. Use for /deep-review or when the user asks for a deep, exhaustive, thorough, or nitpick-level review, a CodeRabbit-style review, to "find everything", to "leave no stone unturned", or wants maximum coverage on a PR or branch. Optimizes for recall; some noise is acceptable. For a fast, conservative, senior-engineer review that flags only what matters, use code-review instead.
+description: Perform a maximally thorough, CodeRabbit-style code review that fans out one focused sub-agent per changed file, runs every available linter/SAST/secret scanner, and reports every issue down to nitpicks. Use for /deep-review or when the user asks for a deep, exhaustive, thorough, or nitpick-level review, a CodeRabbit-style review, to "find everything", to "leave no stone unturned", or wants maximum coverage on a PR or branch. Optimizes for recall; some noise is acceptable. For bounded bug hunting with independent Standards and Spec checks and no scanner battery, use code-review instead.
 ---
 
 # Deep Review
