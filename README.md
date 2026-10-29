@@ -70,9 +70,9 @@ skills/<category>/<skill-name>/SKILL.md
 
 - **[visual-review](./skills/engineering/visual-review/SKILL.md)** — inspect a PR's running UI through computer use for clipping, wrapping, uneven controls, spacing, responsive layout issues, and UX improvements. Reports screenshot evidence, concrete fixes, and optional redesign recommendations. Invoke with `/visual-review <PR URL>`.
 - **[code-review](./skills/engineering/code-review/SKILL.md)** — bounded bug hunting with independent Standards and Spec reviewers, concrete behavior traces, and verified Critical/High/Medium/Low findings; no per-file fan-out or scanner battery.
-- **[deep-review](./skills/engineering/deep-review/SKILL.md)** — the exhaustive counterpart to code-review: a maximally thorough, CodeRabbit-style review that fans out one sub-agent per changed file, runs every available linter/SAST/secret scanner, and reports every issue down to nitpicks. Optimizes for coverage over signal-to-noise — closes most of the gap with CodeRabbit when you want to find everything.
+- **[deep-review](./skills/engineering/deep-review/SKILL.md)** — the exhaustive counterpart to code-review: a maximally thorough, CodeRabbit-style review that fans out one sub-agent per changed file, runs independent Standards and Spec reviewers, runs every available linter/SAST/secret scanner, and reports every substantive issue from Critical to Low — no nitpicks or subjective style. Optimizes for coverage when you want to find everything.
 - **[git-commit](./skills/engineering/git-commit/SKILL.md)** — stage all changes and create a git commit with an auto-generated, convention-matched message.
-- **[git-pr](./skills/engineering/git-pr/SKILL.md)** — branch off master/develop when needed, commit all changes, push, and open a PR automatically.
+- **[git-pr](./skills/engineering/git-pr/SKILL.md)** — branch off master/develop when needed, commit the work, push, and open a PR automatically, with a summary-first body, verification evidence, and before/after screenshots for UI changes.
 
 ### Productivity
 
